@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Login from './components/Login';
 import StartupMenu from './components/StartupMenu';
 import CreateCompany from './components/CreateCompany';
+import Dashboard from './components/Dashboard';
 import { useGlobalAccountingHotkeys } from './hooks/useGlobalAccountingHotkeys';
 
 function App() {
@@ -93,25 +94,15 @@ function App() {
                 </div>
             )}
 
+            {/* 🏢 DAY 5 MAIN ACCOUNTING DASHBOARD SCREEN */}
             {currentScreen === 'COMPANY_DASHBOARD' && activeCompany && (
-                <div style={{ backgroundColor: '#002b36', color: '#fff', minHeight: '100vh', padding: '40px', fontFamily: 'monospace' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #00ffcc', paddingBottom: '10px' }}>
-                        <h2>🏢 WORKING CURRENT DATABASE REGISTER: <span style={{ color: '#00ffcc' }}>{activeCompany.name.toUpperCase()}</span></h2>
-                        <button 
-                            onClick={() => {
-                                setActiveCompany(null);
-                                setCurrentScreen('STARTUP');
-                            }}
-                            style={{ background: '#dc322f', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer', fontWeight: 'bold' }}
-                        >
-                            [F3] SHUT COMPANY
-                        </button>
-                    </div>
-                    <div style={{ marginTop: '30px', padding: '20px', border: '1px solid #2aa198', background: '#001f26' }}>
-                        <p>🚀 <strong>Gateway Module Initialized Successfully.</strong></p>
-                        <p>You can now prepare custom charts of accounts, financial reporting matrices, or ledger balances for this entity profile block.</p>
-                    </div>
-                </div>
+                <Dashboard 
+                    activeCompany={activeCompany} 
+                    onShutCompany={() => {
+                        setActiveCompany(null);
+                        setCurrentScreen('STARTUP'); // Gracefully drop out back to company selection register
+                    }} 
+                />
             )}
         </div>
     );
