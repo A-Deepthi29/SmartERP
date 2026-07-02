@@ -12,12 +12,54 @@ import SalesVoucher from './components/SalesVoucher';
 import InvoicePrintView from './components/InvoicePrintView';
 import ProfitReport from './components/ProfitReport';
 import { useGlobalAccountingHotkeys } from './hooks/useGlobalAccountingHotkeys';
+// 🚀 DAY 13: Import Custom Shortcut Hook
+import useKeyPress from './hooks/useKeyPress';
+
 
 function App() {
     const [userSession, setUserSession] = useState(null);
     const [currentScreen, setCurrentScreen] = useState('AUTH_LOCK');
     const [activeCompany, setActiveCompany] = useState(null);
     const [selectedInvoiceNo, setSelectedInvoiceNo] = useState('');
+    // Define core utility navigation routes
+    const goToDashboard = () => {
+        if (activeCompany) setCurrentScreen('COMPANY_DASHBOARD');
+    };
+
+    // ⌨️ BIND GLOBAL HOTKEYS (Only active if a company profile context is loaded)
+    useKeyPress('Escape', () => {
+        if (currentScreen !== 'COMPANY_DASHBOARD' && currentScreen !== 'STARTUP') {
+            setCurrentScreen('COMPANY_DASHBOARD');
+        }
+    });
+
+    useKeyPress('A', () => {
+        if (activeCompany && currentScreen === 'COMPANY_DASHBOARD') setCurrentScreen('CREATE_GROUP');
+    });
+
+    useKeyPress('C', () => {
+        if (activeCompany && currentScreen === 'COMPANY_DASHBOARD') setCurrentScreen('CREATE_LEDGER');
+    });
+
+    useKeyPress('V', () => {
+        if (activeCompany && currentScreen === 'COMPANY_DASHBOARD') setCurrentScreen('STOCK_MANAGEMENT');
+    });
+
+    useKeyPress('T', () => {
+        if (activeCompany && currentScreen === 'COMPANY_DASHBOARD') setCurrentScreen('SALES_VOUCHER');
+    });
+
+    useKeyPress('P', () => {
+        if (activeCompany && currentScreen === 'COMPANY_DASHBOARD') setCurrentScreen('REPORT_DASHBOARD');
+    });
+
+    useKeyPress('S', () => {
+        if (currentScreen === 'COMPANY_DASHBOARD') {
+            setActiveCompany(null);
+            setCurrentScreen('STARTUP');
+        }
+    });
+
 
     // Run auth state validation check upon reload
     useEffect(() => {

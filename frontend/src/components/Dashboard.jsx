@@ -1,122 +1,94 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Dashboard({ activeCompany, onShutCompany, onOpenLedgerForm, onOpenGroupForm, onOpenStockForm, onOpenSalesForm, onOpenReports }) {
-    // Menu items designed to replicate classic accounting workflows
-    const menuOptions = [
-        { label: 'Select Company', code: 'S', action: () => onShutCompany() },
-        { label: 'Create Accounting Group', code: 'A', action: () => onOpenGroupForm() },
-        { label: 'Chart of Accounts (Ledgers)', code: 'C', action: () => onOpenLedgerForm() },
-        { label: 'Voucher Entry (Purchase Entries)', code: 'V', action: () => onOpenStockForm() },
-        // Update selection P to trigger Profit analytics dashboard maps:
-        { label: 'Profitability Analytics Reports', code: 'P', action: () => onOpenReports() },
-    ];
-
+export default function Dashboard({ 
+    activeCompany, 
+    onOpenLedgerForm, 
+    onOpenGroupForm, 
+    onOpenStockForm, 
+    onOpenSalesForm, 
+    onOpenReports, 
+    onShutCompany 
+}) {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
-    // Keyboard controls for Arrow keys, Enter, and Retro function hotkeys
+    const menuOptions = [
+        { label: 'Create Accounting Group', code: 'A' },
+        { label: 'Chart of Accounts (Ledgers)', code: 'C' },
+        { label: 'Voucher Entry (Purchase Entries)', code: 'V' },
+        { label: 'Voucher Entry (Sales Invoices)', code: 'T' },
+        { label: 'Profitability Analytics Reports', code: 'P' },
+        { label: 'Shut Loaded Company Module', code: 'S' },
+    ];
+
+    // Centralised selection router to map options cleanly to parent handlers
+    const executeAction = (option) => {
+        if (option.code === 'A') onOpenGroupForm();
+        if (option.code === 'C') onOpenLedgerForm();
+        if (option.code === 'V') onOpenStockForm();
+        if (option.code === 'T') onOpenSalesForm();
+        if (option.code === 'P') onOpenReports();
+        if (option.code === 'S') onShutCompany();
+    };
+
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === 'ArrowDown') {
+            if (e.key === 'ArrowUp') {
                 e.preventDefault();
-                setSelectedIndex((prev) => (prev + 1) % menuOptions.length);
-            } else if (e.key === 'ArrowUp') {
+                setSelectedIndex((prev) => (prev > 0 ? prev - 1 : menuOptions.length - 1));
+            } else if (e.key === 'ArrowDown') {
                 e.preventDefault();
-                setSelectedIndex((prev) => (prev - 1 + menuOptions.length) % menuOptions.length);
+                setSelectedIndex((prev) => (prev < menuOptions.length - 1 ? prev + 1 : 0));
             } else if (e.key === 'Enter') {
                 e.preventDefault();
-                menuOptions[selectedIndex].action();
-            } else if (e.key === 'F3') {
-                e.preventDefault();
-                onShutCompany(); // Close company instantly via classic F3 shortcut
+                executeAction(menuOptions[selectedIndex]); // FIXED: No longer calls option.action()
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [selectedIndex, activeCompany]);
+    }, [selectedIndex]);
 
     return (
-        <div style={{ backgroundColor: '#002b36', color: '#00ffcc', minHeight: '100vh', fontFamily: 'monospace', padding: '20px' }}>
-            
-            {/* Top Status Bar */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #00ffcc', paddingBottom: '5px', fontSize: '14px' }}>
-                <span>SmartERP v1.0.0</span>
-                <span style={{ color: '#fff', fontWeight: 'bold' }}>Gateway of SmartERP</span>
-                <span>Press [F3] to Shut Company</span>
+        <div style={{ padding: '20px', display: 'flex', gap: '20px', backgroundColor: '#002b36', color: '#839496', minHeight: '90vh' }}>
+            {/* Left Sidebar Status Panel */}
+            <div style={{ flex: 1, border: '1px solid #2aa198', padding: '20px' }}>
+                <h3 style={{ color: '#b58900', borderBottom: '1px dashed #586e75', paddingBottom: '10px' }}>CURRENT WORKSPACE</h3>
+                <p><strong>Company Name:</strong> <span style={{ color: '#fff', fontSize: '18px' }}>{activeCompany.name}</span></p>
+                <p><strong>State Jurisdiction:</strong> {activeCompany.state_jurisdiction || 'Texas'}</p>
+                <p><strong>Financial Year:</strong> 01/04/2026</p>
+                <p><strong>Books Status:</strong> <span style={{ color: '#859900' }}>🟢 Operational & Active</span></p>
             </div>
 
-            {/* Split Screen Columns Layout */}
-            <div style={{ display: 'flex', gap: '20px', marginTop: '20px', height: 'calc(100vh - 100px)' }}>
+            {/* Right Interactive Menu Console */}
+            <div style={{ flex: 1.5, border: '1px solid #2aa198', padding: '20px' }}>
+                <h3 style={{ textAlign: 'center', color: '#fff', borderBottom: '1px solid #2aa198', paddingBottom: '10px' }}>MAIN MENU</h3>
                 
-                {/* Left Side: Corporate Meta Information Panel */}
-                <div style={{ width: '50%', border: '1px solid #00ffcc', padding: '20px', background: '#001f26' }}>
-                    <h3 style={{ color: '#b58900', borderBottom: '1px dashed #00ffcc', paddingBottom: '5px' }}>CURRENT WORKSPACE</h3>
-                    <table style={{ width: '100%', color: '#00ffcc', borderCollapse: 'collapse', marginTop: '15px' }}>
-                        <tbody>
-                            <tr>
-                                <td style={{ padding: '8px 0', fontWeight: 'bold', width: '40%' }}>Company Name:</td>
-                                <td style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}>{activeCompany.name.toUpperCase()}</td>
-                            </tr>
-                            <tr>
-                                <td style={{ padding: '8px 0', fontWeight: 'bold' }}>State Jurisdiction:</td>
-                                <td style={{ color: '#2aa198' }}>{activeCompany.state || 'Not Specified'}</td>
-                            </tr>
-                            <tr>
-                                <td style={{ padding: '8px 0', fontWeight: 'bold' }}>Financial Year:</td>
-                                <td style={{ color: '#b58900' }}>
-                                    {activeCompany.financial_year_start ? new Date(activeCompany.financial_year_start).toLocaleDateString('en-GB') : '01/04/2026'}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style={{ padding: '8px 0', fontWeight: 'bold' }}>Books Status:</td>
-                                <td style={{ color: '#859900' }}>🟢 Operational & Active</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style={{ marginTop: '20px' }}>
+                    {menuOptions.map((opt, idx) => {
+                        const isSelected = idx === selectedIndex;
+                        return (
+                            <div 
+                                key={idx}
+                                onClick={() => executeAction(opt)} // FIXED: No longer calls option.action()
+                                style={{
+                                    padding: '14px 20px',
+                                    margin: '8px 0',
+                                    backgroundColor: isSelected ? '#073642' : 'transparent',
+                                    border: isSelected ? '2px solid #00ffcc' : '1px solid #586e75',
+                                    color: isSelected ? '#00ffcc' : '#2aa198',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    fontWeight: isSelected ? 'bold' : 'normal',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <span>[{opt.code}] {opt.label}</span>
+                                {isSelected && <span style={{ color: '#00ffcc' }}>◀</span>}
+                            </div>
+                        );
+                    })}
                 </div>
-
-                {/* Right Side: Keyboard Navigation Operational Menu */}
-                <div style={{ width: '50%', border: '1px solid #00ffcc', padding: '20px', background: '#001f26', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <h3 style={{ borderBottom: '1px solid #00ffcc', width: '100%', textAlign: 'center', paddingBottom: '10px', color: '#fff' }}>
-                        MAIN MENU
-                    </h3>
-                    
-                    <div style={{ width: '80%', marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {menuOptions.map((option, index) => {
-                            const isSelected = index === selectedIndex;
-                            return (
-                                <div
-                                    key={index}
-                                    onClick={() => option.action()}
-                                    style={{
-                                        padding: '12px 20px',
-                                        background: isSelected ? '#00ffcc' : 'transparent',
-                                        color: isSelected ? '#002b36' : '#00ffcc',
-                                        border: isSelected ? '1px solid #fff' : '1px solid transparent',
-                                        cursor: 'pointer',
-                                        fontWeight: isSelected ? 'bold' : 'normal',
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        fontSize: '16px'
-                                    }}
-                                >
-                                    <span>
-                                        <span style={{ color: isSelected ? '#dc322f' : '#fff', marginRight: '10px', fontWeight: 'bold' }}>
-                                            [{option.code}]
-                                        </span>
-                                        {option.label}
-                                    </span>
-                                    {isSelected && <span>◀</span>}
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    <div style={{ marginTop: 'auto', color: '#93a1a1', fontSize: '12px', textAlign: 'center', borderTop: '1px dashed #2aa198', width: '100%', paddingTop: '10px' }}>
-                        Use [↑ / ↓ Keys] to navigate, [Enter] to select option
-                    </div>
-                </div>
-
             </div>
         </div>
     );
