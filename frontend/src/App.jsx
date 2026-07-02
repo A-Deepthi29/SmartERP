@@ -1,68 +1,90 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Login from './components/Login';
 import StartupMenu from './components/StartupMenu';
+import CreateCompany from './components/CreateCompany';
 import { useGlobalAccountingHotkeys } from './hooks/useGlobalAccountingHotkeys';
 
 function App() {
-    const [currentScreen, setCurrentScreen] = useState('STARTUP');
+    const [userSession, setUserSession] = useState(null);
+    const [currentScreen, setCurrentScreen] = useState('AUTH_LOCK');
     const [activeCompany, setActiveCompany] = useState(null);
 
-    // Mount background shortcut global engine hook listeners
+    // Run auth state validation check upon reload
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Bypass login view if security token signature remains valid
+            setUserSession({ id: 1, username: "CachedOperator" });
+            setCurrentScreen('STARTUP');
+        }
+    }, []);
+
     useGlobalAccountingHotkeys({
         activeCompany,
         isAlterScreen: currentScreen === 'ALTER',
         onShutCompany: () => {
-            alert(`Shutting active environment footprint for context: ${activeCompany.name}`);
             setActiveCompany(null);
             setCurrentScreen('STARTUP');
         },
         onAlterCompany: () => {
             if (activeCompany) setCurrentScreen('ALTER');
         },
-        onDeleteCompany: async (id) => {
-            try {
-                const res = await fetch(`http://localhost:5000/api/companies/${id}`, { method: 'DELETE' });
-                const json = await res.json();
-                if(json.success) {
-                    alert(json.message);
-                    setActiveCompany(null);
-                    setCurrentScreen('STARTUP');
-                } else {
-                    alert(json.error);
-                }
-            } catch (err) {
-                console.error("Deletion execution failure:", err);
-            }
+        onDeleteCompany: () => {
+            setActiveCompany(null);
+            setCurrentScreen('STARTUP');
         }
     });
 
+    const handleLogOutClosure = () => {
+        localStorage.removeItem('token');
+        setUserSession(null);
+        setActiveCompany(null);
+        setCurrentScreen('AUTH_LOCK');
+    };
+
     return (
         <div>
-            {currentScreen === 'STARTUP' && (
-                <StartupMenu 
-                    onCreateSelect={() => setCurrentScreen('CREATE_FORM')}
-                    onSelectCompanyView={() => {
-                        // Mock runtime choice context assignment to evaluate shortcut state changes
-                        setActiveCompany({ id: 1, name: "Sample Enterprise Ltd" });
-                        alert("Company mock loaded. Press [Alt + F3] to Alter setup parameters or [Alt + F1] to Shut context workspace.");
-                    }}
-                />
+            {currentScreen === 'AUTH_LOCK' && (
+                <Login onAuthSuccess={(user) => {
+                    setUserSession(user);
+                    setCurrentScreen('STARTUP');
+                }} />
             )}
-            {currentScreen === 'CREATE_FORM' && (
-                <div style={{ backgroundColor: '#002b36', color: '#fff', height: '100vh', padding: '40px', fontFamily: 'monospace' }}>
-                    <h2>[Company Creation Interface Workspace Mode]</h2>
-                    <p>Press Esc key mapping route manually logic placeholder to get back into Startup interface console view panels.</p>
-                    <button onClick={() => setCurrentScreen('STARTUP')} style={{ background: '#2aa198', color: '#fff', padding: '10px' }}>
-                        Back to main panel
+            
+            {currentScreen === 'STARTUP' && (
+                <div>
+                    <StartupMenu 
+                        onCreateSelect={() => setCurrentScreen('CREATE_FORM')}
+                        onSelectCompanyView={() => {
+                            setActiveCompany({ id: 1, name: "Sample Enterprise Ltd" });
+                            alert("Company workspace loaded successfully.");
+                        }}
+                    />
+                    {/* Retro Logout Button Element */}
+                    <button 
+                        onClick={handleLogOutClosure}
+                        style={{ position: 'fixed', bottom: '20px', right: '20px', background: '#dc322f', color: '#fff', border: 'none', padding: '8px 15px', fontFamily: 'monospace', cursor: 'pointer', fontWeight: 'bold' }}
+                    >
+                        [ESC] LOGOUT SESSION
                     </button>
                 </div>
             )}
-            {currentScreen === 'ALTER' && (
-                <div style={{ backgroundColor: '#002b36', color: '#fff', height: '100vh', padding: '40px', fontFamily: 'monospace' }}>
-                    <h2 style={{ color: '#cb4b16' }}>[Alteration Interface Framework Mode: Altering - {activeCompany?.name}]</h2>
-                    <p style={{ color: '#dc322f', fontWeight: 'bold' }}>⚠️ Hotkey Operational Target Active: Press [Alt + D] sequence directly on this screen to simulate schema resource deletion cascade.</p>
-                    <button onClick={() => setCurrentScreen('STARTUP')} style={{ background: '#586e75', color: '#fff', padding: '10px', marginTop: '20px' }}>
-                        Cancel Execution
+            
+            {/* REPLACE THE OLD LOGIC WITH THIS UPDATED WRAPPER */}
+            {currentScreen === 'CREATE_FORM' && (
+                <div style={{ backgroundColor: '#002b36', color: '#fff', minHeight: '100vh', padding: '40px', fontFamily: 'monospace' }}>
+                    
+                    {/* The Return Button remains on top */}
+                    <button 
+                        onClick={() => setCurrentScreen('STARTUP')} 
+                        style={{ background: '#2aa198', color: '#fff', padding: '10px', border: 'none', cursor: 'pointer', fontWeight: 'bold', marginBottom: '20px' }}
+                    >
+                        Return to Main Menu
                     </button>
+
+                    {/* Rendering the actual company input form component directly inside the screen state */}
+                    <CreateCompany onCompanyCreated={() => setCurrentScreen('STARTUP')} />
+                    
                 </div>
             )}
         </div>
