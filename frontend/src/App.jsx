@@ -10,6 +10,7 @@ import StockManagement from './components/StockManagement';
 import PurchaseVoucher from './components/PurchaseVoucher';
 import SalesVoucher from './components/SalesVoucher';
 import InvoicePrintView from './components/InvoicePrintView';
+import ProfitReport from './components/ProfitReport';
 import { useGlobalAccountingHotkeys } from './hooks/useGlobalAccountingHotkeys';
 
 function App() {
@@ -109,7 +110,8 @@ function App() {
                     onOpenLedgerForm={() => setCurrentScreen('CREATE_LEDGER')}
                     onOpenGroupForm={() => setCurrentScreen('CREATE_GROUP')}
                     onOpenStockForm={() => setCurrentScreen('STOCK_MANAGEMENT')}
-                    onOpenSalesForm={() => setCurrentScreen('SALES_VOUCHER')} // Link state tracker
+                    onOpenSalesForm={() => setCurrentScreen('SALES_VOUCHER')}
+                    onOpenReports={() => setCurrentScreen('REPORT_DASHBOARD')} // Map reporting state logic
                     onShutCompany={() => {
                         setActiveCompany(null);
                         setCurrentScreen('STARTUP');
@@ -117,6 +119,14 @@ function App() {
                 />
             )}
 
+            {/* DAY 12 SYSTEM MODULE VIEW: REALTIME PROFITABILITY REPORTING */}
+            {currentScreen === 'REPORT_DASHBOARD' && activeCompany && (
+                <ProfitReport 
+                    activeCompany={activeCompany}
+                    onBackToDashboard={() => setCurrentScreen('COMPANY_DASHBOARD')}
+                />
+            )}
+            
             {/* UPDATED DAY 11 APP CONTROL ROUTER BLOCK */}
             {currentScreen === 'SALES_VOUCHER' && activeCompany && (
                 <SalesVoucher 
