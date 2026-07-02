@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-export default function SalesVoucher({ activeCompany, onBackToDashboard }) {
+// Add onViewInvoice redirect handler signature trigger
+export default function SalesVoucher({ activeCompany, onBackToDashboard, onViewInvoice }) {
     const [invoiceNo, setInvoiceNo] = useState('');
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [customers, setCustomers] = useState([]);
@@ -54,9 +55,15 @@ export default function SalesVoucher({ activeCompany, onBackToDashboard }) {
 
             if (response.ok) {
                 setMessage(`✅ ${data.message}`);
+                const passedNo = invoiceNo; // Buffer reference value 
                 setInvoiceNo('');
                 setQty('');
                 setRate('');
+                
+                // Trigger view redirection straight to printing preview deck within 1.5 seconds safely
+                setTimeout(() => {
+                    onViewInvoice(passedNo);
+                }, 1200);
             } else {
                 setIsError(true);
                 setMessage(`⚠️ Verification Alert: ${data.message}`);

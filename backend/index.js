@@ -11,6 +11,8 @@ const companyRoutes = require('./routes/companyRoutes');
 const inventoryRoutes = require('./controllers/inventoryController');
 // Add along your other controller imports
 const voucherRoutes = require('./controllers/voucherController');
+// Add along your other controller imports
+const billingRoutes = require('./controllers/billingController');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,6 +29,9 @@ app.use('/api/masters', ledgerRoutes);
 app.use('/api/inventory', inventoryRoutes);
 // Mount under the api workspace route tree block
 app.use('/api/vouchers', voucherRoutes);
+// Mount under the api workspace route tree block
+app.use('/api/billing', billingRoutes);
+
 
 // ENGINE LISTENER ENTRY POINT
 app.listen(PORT, () => {

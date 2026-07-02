@@ -9,12 +9,14 @@ import StockManagement from './components/StockManagement';
 // Replace the old Day 8 import with this complete structural engine view:
 import PurchaseVoucher from './components/PurchaseVoucher';
 import SalesVoucher from './components/SalesVoucher';
+import InvoicePrintView from './components/InvoicePrintView';
 import { useGlobalAccountingHotkeys } from './hooks/useGlobalAccountingHotkeys';
 
 function App() {
     const [userSession, setUserSession] = useState(null);
     const [currentScreen, setCurrentScreen] = useState('AUTH_LOCK');
     const [activeCompany, setActiveCompany] = useState(null);
+    const [selectedInvoiceNo, setSelectedInvoiceNo] = useState('');
 
     // Run auth state validation check upon reload
     useEffect(() => {
@@ -115,9 +117,22 @@ function App() {
                 />
             )}
 
-            {/* DAY 10 VIEW: OUTBOUND SALES VOUCHERS */}
+            {/* UPDATED DAY 11 APP CONTROL ROUTER BLOCK */}
             {currentScreen === 'SALES_VOUCHER' && activeCompany && (
                 <SalesVoucher 
+                    activeCompany={activeCompany}
+                    onBackToDashboard={() => setCurrentScreen('COMPANY_DASHBOARD')}
+                    onViewInvoice={(invNo) => {
+                        setSelectedInvoiceNo(invNo);
+                        setCurrentScreen('INVOICE_VIEW');
+                    }}
+                />
+            )}
+
+            {/* DAY 11 PRINTING LAYOUT WORKSPACE PREVIEW ENGINE */}
+            {currentScreen === 'INVOICE_VIEW' && activeCompany && (
+                <InvoicePrintView 
+                    invoiceNo={selectedInvoiceNo}
                     activeCompany={activeCompany}
                     onBackToDashboard={() => setCurrentScreen('COMPANY_DASHBOARD')}
                 />

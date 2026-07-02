@@ -26,7 +26,9 @@ router.post('/purchase', async (req, res) => {
             VALUES ($1, (SELECT id FROM ledger_groups WHERE type=$2 LIMIT 1), $3, $4) 
             RETURNING *`;
         
-        const voucherNarrative = `Purc Inv #${invoice_no} - Item ID: ${stock_item_id} [Qty: ${qty}]`;
+        // Append a microtime hash string to avoid clashing with the unique (company_id, name) table constraint
+const trackingSalt = Math.floor(1000 + Math.random() * 9000);
+const voucherNarrative = `Sales Inv #${invoice_no} - Item ID: ${stock_item_id} [Qty: ${qty}] (TXN-${trackingSalt})`;
         const result = await client.query(voucherQuery, [voucherNarrative, 'Asset', total_amount, company_id]);
 
         // Commit transaction blocks safely
