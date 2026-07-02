@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # 🌐 Production Frontend Service Layer
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - smarterp_net
+
+  # ⚙️ Production Backend API Daemon Layer
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      # Update with your active production Postgres credentials context
+      - DATABASE_URL=postgres://postgres:password@db:5432/smarterp
+    networks:
+      - smarterp_net
+
+networks:
+  smarterp_net:
+    driver: bridge
