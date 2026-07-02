@@ -6,8 +6,8 @@ export default function Dashboard({ activeCompany, onShutCompany, onOpenLedgerFo
         { label: 'Select Company', code: 'S', action: () => onShutCompany() },
         { label: 'Create Accounting Group', code: 'A', action: () => onOpenGroupForm() },
         { label: 'Chart of Accounts (Ledgers)', code: 'C', action: () => onOpenLedgerForm() },
-        // Update this action handler:
-        { label: 'Voucher Entry (Stock Items)', code: 'V', action: () => onOpenStockForm() },
+        // Update label to reflect the transactional capabilities built today
+        { label: 'Voucher Entry (Purchase Entries)', code: 'V', action: () => onOpenStockForm() },
         { label: 'Trial Balance', code: 'T', action: () => alert('Opening Trial Balance Reporting...') },
     ];
 

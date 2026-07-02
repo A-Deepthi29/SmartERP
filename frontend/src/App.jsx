@@ -6,6 +6,8 @@ import Dashboard from './components/Dashboard';
 import CreateLedger from './components/CreateLedger';
 import CreateGroup from './components/CreateGroup';
 import StockManagement from './components/StockManagement';
+// Replace the old Day 8 import with this complete structural engine view:
+import PurchaseVoucher from './components/PurchaseVoucher';
 import { useGlobalAccountingHotkeys } from './hooks/useGlobalAccountingHotkeys';
 
 function App() {
@@ -111,9 +113,9 @@ function App() {
                 />
             )}
 
-            {/* DAY 8 WORKSPACE SCREEN VIEW: STOCK MANAGEMENT */}
+            {/* DAY 9 TRANSACTIONS WORKSPACE: GENERATE ACCOUNTING INVENTORY VOUCHERS */}
             {currentScreen === 'STOCK_MANAGEMENT' && activeCompany && (
-                <StockManagement 
+                <PurchaseVoucher 
                     activeCompany={activeCompany}
                     onBackToDashboard={() => setCurrentScreen('COMPANY_DASHBOARD')}
                 />
