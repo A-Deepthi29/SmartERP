@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Dashboard({ activeCompany, onShutCompany }) {
+export default function Dashboard({ activeCompany, onShutCompany, onOpenLedgerForm }) {
     // Menu items designed to replicate classic accounting workflows
     const menuOptions = [
         { label: 'Select Company', code: 'S', action: () => onShutCompany() },
         { label: 'Alter Company', code: 'A', action: () => alert('Alter Company Module Coming Soon!') },
-        { label: 'Chart of Accounts (Ledgers)', code: 'C', action: () => alert('Opening Masters Module...') },
+        // Trigger screen switch callback passed by parent app handler
+        { label: 'Chart of Accounts (Ledgers)', code: 'C', action: () => onOpenLedgerForm() },
         { label: 'Voucher Entry (Transactions)', code: 'V', action: () => alert('Opening Voucher Engine...') },
         { label: 'Trial Balance', code: 'T', action: () => alert('Opening Trial Balance Reporting...') },
     ];

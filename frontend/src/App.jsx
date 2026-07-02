@@ -3,6 +3,7 @@ import Login from './components/Login';
 import StartupMenu from './components/StartupMenu';
 import CreateCompany from './components/CreateCompany';
 import Dashboard from './components/Dashboard';
+import CreateLedger from './components/CreateLedger';
 import { useGlobalAccountingHotkeys } from './hooks/useGlobalAccountingHotkeys';
 
 function App() {
@@ -94,14 +95,23 @@ function App() {
                 </div>
             )}
 
-            {/* 🏢 DAY 5 MAIN ACCOUNTING DASHBOARD SCREEN */}
+            {/* RENDER THE ACTIVE WORKSPACE DASHBOARD */}
             {currentScreen === 'COMPANY_DASHBOARD' && activeCompany && (
                 <Dashboard 
                     activeCompany={activeCompany} 
+                    onOpenLedgerForm={() => setCurrentScreen('CREATE_LEDGER')}
                     onShutCompany={() => {
                         setActiveCompany(null);
-                        setCurrentScreen('STARTUP'); // Gracefully drop out back to company selection register
+                        setCurrentScreen('STARTUP');
                     }} 
+                />
+            )}
+
+            {/* NEW DAY 6 WORKSPACE SCREEN VIEW: CREATE ACCOUNT LEDGER */}
+            {currentScreen === 'CREATE_LEDGER' && activeCompany && (
+                <CreateLedger 
+                    activeCompany={activeCompany}
+                    onBackToDashboard={() => setCurrentScreen('COMPANY_DASHBOARD')}
                 />
             )}
         </div>
