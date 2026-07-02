@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Dashboard({ activeCompany, onShutCompany, onOpenLedgerForm, onOpenGroupForm, onOpenStockForm }) {
+export default function Dashboard({ activeCompany, onShutCompany, onOpenLedgerForm, onOpenGroupForm, onOpenStockForm, onOpenSalesForm }) {
     // Menu items designed to replicate classic accounting workflows
     const menuOptions = [
         { label: 'Select Company', code: 'S', action: () => onShutCompany() },
         { label: 'Create Accounting Group', code: 'A', action: () => onOpenGroupForm() },
         { label: 'Chart of Accounts (Ledgers)', code: 'C', action: () => onOpenLedgerForm() },
-        // Update label to reflect the transactional capabilities built today
         { label: 'Voucher Entry (Purchase Entries)', code: 'V', action: () => onOpenStockForm() },
-        { label: 'Trial Balance', code: 'T', action: () => alert('Opening Trial Balance Reporting...') },
+        // Map option T to open the Sales Invoicing engine:
+        { label: 'Voucher Entry (Sales Invoices)', code: 'T', action: () => onOpenSalesForm() },
     ];
 
     const [selectedIndex, setSelectedIndex] = useState(0);

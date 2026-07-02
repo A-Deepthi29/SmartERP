@@ -8,6 +8,7 @@ import CreateGroup from './components/CreateGroup';
 import StockManagement from './components/StockManagement';
 // Replace the old Day 8 import with this complete structural engine view:
 import PurchaseVoucher from './components/PurchaseVoucher';
+import SalesVoucher from './components/SalesVoucher';
 import { useGlobalAccountingHotkeys } from './hooks/useGlobalAccountingHotkeys';
 
 function App() {
@@ -99,17 +100,26 @@ function App() {
                 </div>
             )}
 
-            {/* MAIN DASHBOARD CONTAINER ENTRYPOINT */}
+            {/* MAIN DASHBOARD BLOCK */}
             {currentScreen === 'COMPANY_DASHBOARD' && activeCompany && (
                 <Dashboard 
                     activeCompany={activeCompany} 
                     onOpenLedgerForm={() => setCurrentScreen('CREATE_LEDGER')}
                     onOpenGroupForm={() => setCurrentScreen('CREATE_GROUP')}
-                    onOpenStockForm={() => setCurrentScreen('STOCK_MANAGEMENT')} // Mount target
+                    onOpenStockForm={() => setCurrentScreen('STOCK_MANAGEMENT')}
+                    onOpenSalesForm={() => setCurrentScreen('SALES_VOUCHER')} // Link state tracker
                     onShutCompany={() => {
                         setActiveCompany(null);
                         setCurrentScreen('STARTUP');
                     }} 
+                />
+            )}
+
+            {/* DAY 10 VIEW: OUTBOUND SALES VOUCHERS */}
+            {currentScreen === 'SALES_VOUCHER' && activeCompany && (
+                <SalesVoucher 
+                    activeCompany={activeCompany}
+                    onBackToDashboard={() => setCurrentScreen('COMPANY_DASHBOARD')}
                 />
             )}
 
