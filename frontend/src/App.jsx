@@ -5,6 +5,7 @@ import CreateCompany from './components/CreateCompany';
 import Dashboard from './components/Dashboard';
 import CreateLedger from './components/CreateLedger';
 import CreateGroup from './components/CreateGroup';
+import StockManagement from './components/StockManagement';
 import { useGlobalAccountingHotkeys } from './hooks/useGlobalAccountingHotkeys';
 
 function App() {
@@ -96,16 +97,25 @@ function App() {
                 </div>
             )}
 
-            {/* CORE ACTIVE ACCOUNTING WORKSPACE MONITOR */}
+            {/* MAIN DASHBOARD CONTAINER ENTRYPOINT */}
             {currentScreen === 'COMPANY_DASHBOARD' && activeCompany && (
                 <Dashboard 
                     activeCompany={activeCompany} 
                     onOpenLedgerForm={() => setCurrentScreen('CREATE_LEDGER')}
-                    onOpenGroupForm={() => setCurrentScreen('CREATE_GROUP')} // New target map
+                    onOpenGroupForm={() => setCurrentScreen('CREATE_GROUP')}
+                    onOpenStockForm={() => setCurrentScreen('STOCK_MANAGEMENT')} // Mount target
                     onShutCompany={() => {
                         setActiveCompany(null);
                         setCurrentScreen('STARTUP');
                     }} 
+                />
+            )}
+
+            {/* DAY 8 WORKSPACE SCREEN VIEW: STOCK MANAGEMENT */}
+            {currentScreen === 'STOCK_MANAGEMENT' && activeCompany && (
+                <StockManagement 
+                    activeCompany={activeCompany}
+                    onBackToDashboard={() => setCurrentScreen('COMPANY_DASHBOARD')}
                 />
             )}
 
@@ -116,7 +126,7 @@ function App() {
                     onBackToDashboard={() => setCurrentScreen('COMPANY_DASHBOARD')}
                 />
             )}
-            
+
             {/* NEW DAY 6 WORKSPACE SCREEN VIEW: CREATE ACCOUNT LEDGER */}
             {currentScreen === 'CREATE_LEDGER' && activeCompany && (
                 <CreateLedger 

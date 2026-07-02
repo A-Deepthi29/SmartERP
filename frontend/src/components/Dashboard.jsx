@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Dashboard({ activeCompany, onShutCompany, onOpenLedgerForm, onOpenGroupForm }) {
+export default function Dashboard({ activeCompany, onShutCompany, onOpenLedgerForm, onOpenGroupForm, onOpenStockForm }) {
     // Menu items designed to replicate classic accounting workflows
     const menuOptions = [
         { label: 'Select Company', code: 'S', action: () => onShutCompany() },
-        // Update this line right here:
         { label: 'Create Accounting Group', code: 'A', action: () => onOpenGroupForm() },
         { label: 'Chart of Accounts (Ledgers)', code: 'C', action: () => onOpenLedgerForm() },
-        { label: 'Voucher Entry (Transactions)', code: 'V', action: () => alert('Opening Voucher Engine...') },
+        // Update this action handler:
+        { label: 'Voucher Entry (Stock Items)', code: 'V', action: () => onOpenStockForm() },
         { label: 'Trial Balance', code: 'T', action: () => alert('Opening Trial Balance Reporting...') },
     ];
 

@@ -7,6 +7,8 @@ const authRoutes = require('./controllers/authController');
 const ledgerRoutes = require('./controllers/ledgerController');
 // point company requests to your dedicated router module
 const companyRoutes = require('./routes/companyRoutes'); 
+// Near your other route imports
+const inventoryRoutes = require('./controllers/inventoryController');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +21,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes); // Handled safely by routes/companyRoutes.js
 app.use('/api/masters', ledgerRoutes);
+// Near your other app.use router mounting lines
+app.use('/api/inventory', inventoryRoutes);
 
 // ENGINE LISTENER ENTRY POINT
 app.listen(PORT, () => {
